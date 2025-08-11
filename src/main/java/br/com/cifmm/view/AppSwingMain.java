@@ -21,6 +21,8 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -46,33 +48,30 @@ public class AppSwingMain extends JFrame {
     }
 	
 	private static class ImageRenderer extends DefaultTableCellRenderer {
-	    private static final long serialVersionUID = 1L;  // Adicione esta linha
+	    private static final long serialVersionUID = 1L;
 	    
 	    @Override
 	    public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
 	            boolean isSelected, boolean hasFocus, int row, int column) {
 	        
-	        java.awt.Component component = super.getTableCellRendererComponent(table, value, 
+	        java.awt.Component c = super.getTableCellRendererComponent(table, "", 
 	            isSelected, hasFocus, row, column);
 	        
-	        if (value instanceof ImageIcon) {
-	            JLabel label = new JLabel();
-	            label.setOpaque(true);
+	        if (c instanceof JLabel) {
+	            JLabel label = (JLabel) c;
 	            label.setHorizontalAlignment(JLabel.CENTER);
-	            label.setIcon((ImageIcon) value);
 	            
-	            if (isSelected) {
-	                label.setBackground(table.getSelectionBackground());
-	                label.setForeground(table.getSelectionForeground());
+	            if (value instanceof ImageIcon) {
+	                ImageIcon icon = (ImageIcon) value;
+	                // Redimensiona a imagem se necessário
+	                Image img = icon.getImage().getScaledInstance(80, 100, Image.SCALE_SMOOTH);
+	                label.setIcon(new ImageIcon(img));
 	            } else {
-	                label.setBackground(table.getBackground());
-	                label.setForeground(table.getForeground());
+	                label.setIcon(null);
 	            }
-	            
-	            return label;
 	        }
 	        
-	        return component;
+	        return c;
 	    }
 	}
 
@@ -121,18 +120,19 @@ public class AppSwingMain extends JFrame {
 		table = new JTable();
 		table.setBorder(new LineBorder(new Color(192, 192, 192)));
 		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"New column", "New column", "New column"
-			}
+		    new Object[][] {
+		        {"Dado 1", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 3"},
+		        {"Dado 4", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_verso_03093.png"), "Dado 6"},
+		        {"Dado 7", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 9"},
+		    },
+		    new String[] {
+		        "Coluna 1", "Fotos", "Coluna 3"
+		    }
 		));
-		
+
+		// Configuração do renderizador
 		table.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
-		table.setRowHeight(100);
+		table.setRowHeight(100); // Ajuste a altura conforme necessário
 		
 		GroupLayout gl_Main = new GroupLayout(Main);
 		gl_Main.setHorizontalGroup(
@@ -177,6 +177,17 @@ public class AppSwingMain extends JFrame {
 	        JOptionPane.showMessageDialog(this, "Erro ao processar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 	        e.printStackTrace();  // Log para depuração
 	    }
+	}
+	
+	private ImageIcon loadImage(String path) {
+	    try {
+	        if (path != null && !path.isEmpty()) {
+	            return new ImageIcon(path);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 	
 }
