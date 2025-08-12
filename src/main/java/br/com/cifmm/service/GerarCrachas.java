@@ -114,27 +114,36 @@ public class GerarCrachas {
 
     private BufferedImage processarFrente(String nome, String matricula) throws Exception {
         BufferedImage template = ImageIO.read(new File(IMAGES_PATH + "Cracha_Frente.jpg"));
+        System.out.println("Template dimensions: " + template.getWidth() + "x" + template.getHeight());
+
+        // Carrega foto e QR Code antes
+        BufferedImage foto = carregarFotoFuncionario(matricula);
+        BufferedImage qrCode = carregarImagem(matricula + ".png");
+
+        // Cria o Graphics2D
         Graphics2D g = template.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Adiciona QR Code
-        BufferedImage qrCode = carregarImagem(matricula + ".png");
-        if (qrCode != null) {
-            g.drawImage(qrCode, POSICAO_QR.x, POSICAO_QR.y, TAMANHO_QR.width, TAMANHO_QR.height, null);
-        }
-
-        // Adiciona foto
-        BufferedImage foto = carregarFotoFuncionario(matricula);
+        // Desenha foto
         if (foto != null) {
             g.drawImage(foto, POSICAO_FOTO.x, POSICAO_FOTO.y, TAMANHO_FOTO.width, TAMANHO_FOTO.height, null);
         }
 
-        // Adiciona textos
+        // Desenha QR Code
+        if (qrCode != null) {
+            g.drawImage(qrCode, POSICAO_QR.x, POSICAO_QR.y, TAMANHO_QR.width, TAMANHO_QR.height, null);
+        }
+
+        // Adiciona textos por último
         configurarTextosFrente(g, nome, matricula);
+
+        // Fecha o Graphics
         g.dispose();
 
         return template;
     }
+
 
     private BufferedImage processarVerso(String nome, String cargo, String secretaria, String matricula) throws Exception {
         BufferedImage template = ImageIO.read(new File(IMAGES_PATH + "Cracha_Verso.jpg"));
@@ -158,16 +167,34 @@ public class GerarCrachas {
         return template;
     }
 
-    private void configurarTextosFrente(Graphics2D g, String nome, String matricula) throws Exception {
+    private void configurarTextosFrente(Graphics2D g, String nome, String matricula) {
+        // Ativa suavização de texto
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // Define a cor do texto como preto (ou outra cor visível)
+        g.setColor(Color.BLACK);
+
+        // Log para verificar os valores de entrada
+        System.out.println("Desenhando nome: " + nome + ", matricula: " + matricula);
+
         // Nome
         g.setFont(new Font(FONTE_PRINCIPAL, Font.BOLD, 24));
-        drawStringFit(g, getPrimeiroNome(nome), POSICAO_NOME.x, POSICAO_NOME.y, 220);
+        String primeiroNome = getPrimeiroNome(nome);
+        System.out.println("Primeiro nome: " + primeiroNome + ", posição: (" + POSICAO_NOME.x + ", " + POSICAO_NOME.y + ")");
+        drawStringFit(g, primeiroNome, POSICAO_NOME.x, POSICAO_NOME.y, 220);
 
-        // Matrícula
-        Font fonteCustom = Font.createFont(Font.TRUETYPE_FONT, new File(FONTE_CUSTOM_1)).deriveFont(18f);
-        g.setFont(fonteCustom);
+        // Matrícula (com fallback se fonte custom falhar)
+        try {
+            Font fonteCustom = Font.createFont(Font.TRUETYPE_FONT, new File(FONTE_CUSTOM_1)).deriveFont(18f);
+            g.setFont(fonteCustom);
+        } catch (Exception e) {
+            System.err.println("Fonte customizada não encontrada, usando Arial padrão: " + e.getMessage());
+            g.setFont(new Font("Arial", Font.PLAIN, 18));
+        }
+        System.out.println("Desenhando RE: " + matricula + ", posição: (" + POSICAO_MATRICULA.x + ", " + POSICAO_MATRICULA.y + ")");
         g.drawString("RE: " + matricula, POSICAO_MATRICULA.x, POSICAO_MATRICULA.y);
     }
+
 
     private BufferedImage carregarFotoFuncionario(String matricula) {
         BufferedImage foto = carregarImagem(matricula + ".jpg");

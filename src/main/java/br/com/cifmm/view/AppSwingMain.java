@@ -1,200 +1,320 @@
 package br.com.cifmm.view;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 import org.springframework.stereotype.Component;
 
 import br.com.cifmm.control.FuncionarioControl;
 
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.ImageIcon;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-
-import javax.swing.border.MatteBorder;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JTextField;
-import java.awt.Font;
-import java.awt.Image;
-
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
-import javax.swing.table.DefaultTableCellRenderer;
-
+import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.List;
 
 @Component
 public class AppSwingMain extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField textField;
-	private final FuncionarioControl funcionarioControl;
-	private JTable table_1;
-	
-	/**
-	 * Create the frame.
-	 */
-	public AppSwingMain(FuncionarioControl funcionarioControl) {
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField textField;
+    private final FuncionarioControl funcionarioControl;
+    private JTable table_1;
+
+    /**
+     * Create the frame.
+     */
+    public AppSwingMain(FuncionarioControl funcionarioControl) {
         this.funcionarioControl = funcionarioControl;
         initUI();
     }
-	
-	private static class ImageRenderer extends DefaultTableCellRenderer {
-	    private static final long serialVersionUID = 1L;
-	    
-	    @Override
-	    public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-	            boolean isSelected, boolean hasFocus, int row, int column) {
-	        
-	        java.awt.Component c = super.getTableCellRendererComponent(table, "", 
-	            isSelected, hasFocus, row, column);
-	        
-	        if (c instanceof JLabel) {
-	            JLabel label = (JLabel) c;
-	            label.setHorizontalAlignment(JLabel.CENTER);
-	            
-	            if (value instanceof ImageIcon) {
-	                ImageIcon icon = (ImageIcon) value;
-	                // Redimensiona a imagem se necessário
-	                Image img = icon.getImage().getScaledInstance(500, 370, Image.SCALE_SMOOTH);
-	                label.setIcon(new ImageIcon(img));
-	            } else {
-	                label.setIcon(null);
-	            }
-	        }
-	        
-	        return c;
-	    }
-	}
 
-	private void initUI() {
+    // Renderer for images in the table
+    private static class ImageRenderer extends DefaultTableCellRenderer {
+        private static final long serialVersionUID = 1L;
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1391, 796);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
-		
-		JPanel Header = new JPanel();
-		Header.setBorder(new LineBorder(new Color(192, 192, 192)));
-		FlowLayout flowLayout = (FlowLayout) Header.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		contentPane.add(Header, BorderLayout.NORTH);
-		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\resources\\images\\logo.png"));
-		Header.add(lblNewLabel);
-		
-		JPanel SideBar = new JPanel();
-		SideBar.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(192, 192, 192)));
-		FlowLayout flowLayout_1 = (FlowLayout) SideBar.getLayout();
-		flowLayout_1.setHgap(25);
-		contentPane.add(SideBar, BorderLayout.WEST);
-		
-		JButton btnNewButton = new JButton("Gerar Crachas");
-		btnNewButton.setIcon(null);
-		SideBar.add(btnNewButton);
-		
-		JPanel Main = new JPanel();
-		contentPane.add(Main, BorderLayout.CENTER);
-		
-		textField = new JTextField();
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel_1 = new JLabel("Digite o RE:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		
-		JButton btnNewButton_1 = new JButton("Buscar");
-		btnNewButton_1.addActionListener(e -> onBuscar());
-		
-		JScrollPane scrollPane = new JScrollPane();
-		
-		GroupLayout gl_Main = new GroupLayout(Main);
-		gl_Main.setHorizontalGroup(
-			gl_Main.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_Main.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_Main.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1, Alignment.LEADING)
-						.addComponent(textField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1181, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
-		gl_Main.setVerticalGroup(
-			gl_Main.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_Main.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblNewLabel_1)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1098, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(23, Short.MAX_VALUE))
-		);
-		
-		table_1 = new JTable();
-		table_1.setBorder(new LineBorder(new Color(192, 192, 192)));
-		table_1.setModel(new DefaultTableModel(
-		    new Object[][] {
-		        {"Dado 1", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 3"},
-		        {"Dado 4", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_verso_03093.png"), "Dado 6"},
-		        {"Dado 7", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 9"},
-		    },
-		    new String[] {
-		        "Coluna 1", "Fotos", "Coluna 3"
-		    }
-		));
+        @Override
+        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+        	java.awt.Component c = super.getTableCellRendererComponent(table, "",
+                    isSelected, hasFocus, row, column);
 
-		// Configuração do renderizador
-		table_1.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
-		// Configura a largura da coluna 2 (índice 1) para 500px
-		table_1.getColumnModel().getColumn(1).setPreferredWidth(500);
-		table_1.getColumnModel().getColumn(1).setMinWidth(500);
-		table_1.getColumnModel().getColumn(1).setMaxWidth(500);
-		table_1.setRowHeight(370); // Ajuste a altura conforme necessário
-		scrollPane.setViewportView(table_1);
-		Main.setLayout(gl_Main);		
-		
-	}
+            if (c instanceof JLabel) {
+                JLabel label = (JLabel) c;
+                label.setHorizontalAlignment(JLabel.CENTER);
 
-	private void onBuscar() {
-	    String re = textField.getText().trim();
-	    if (re.isEmpty()) {
-	        JOptionPane.showMessageDialog(this, "Digite o RE");
-	        return;
-	    }
+                if (value instanceof ImageIcon) {
+                    ImageIcon icon = (ImageIcon) value;
+                    Image img = icon.getImage().getScaledInstance(500, 370, Image.SCALE_SMOOTH);
+                    label.setIcon(new ImageIcon(img));
+                } else {
+                    label.setIcon(null);
+                }
+            }
 
-	    try {
-	        funcionarioControl.salvarFuncionario(re);
-	        JOptionPane.showMessageDialog(this, "Processado.");
-	    } catch (Exception e) {
-	        JOptionPane.showMessageDialog(this, "Erro ao processar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-	        e.printStackTrace();  // Log para depuração
-	    }
-	}
-	
-	private ImageIcon loadImage(String path) {
-	    try {
-	        if (path != null && !path.isEmpty()) {
-	            return new ImageIcon(path);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return null;
-	}
+            return c;
+        }
+    }
+
+    // Renderer for buttons in the table
+    private static class ButtonRenderer extends JButton implements TableCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+        public ButtonRenderer(String text) {
+            setText(text);
+            setOpaque(true);
+        }
+
+        @Override
+        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            if (isSelected) {
+                setForeground(table.getSelectionForeground());
+                setBackground(table.getSelectionBackground());
+            } else {
+                setForeground(table.getForeground());
+                setBackground(UIManager.getColor("Button.background"));
+            }
+            setText(value == null ? "" : value.toString());
+            return this;
+        }
+    }
+
+    // Editor for buttons in the table
+    private static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        private static final long serialVersionUID = 1L;
+        private final JButton button;
+        private String label;
+        private int row;
+        private final JTable table;
+        private final String actionType;
+
+        public ButtonEditor(JTable table, String buttonText, String actionType) {
+            this.table = table;
+            this.actionType = actionType;
+            button = new JButton(buttonText);
+            button.addActionListener(e -> fireEditingStopped());
+        }
+
+        @Override
+        public java.awt.Component getTableCellEditorComponent(JTable table, Object value,
+                boolean isSelected, int row, int column) {
+            this.label = (value == null) ? "" : value.toString();
+            this.row = row;
+            button.setText(label);
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (actionType.equals("SELECT")) {
+                table.setRowSelectionInterval(row, row);
+            } else if (actionType.equals("EDIT")) {
+                String re = (String) table.getModel().getValueAt(row, 0);
+                showEditDialog(re);
+            }
+            return label;
+        }
+
+        private void showEditDialog(String re) {
+            JDialog dialog = new JDialog();
+            dialog.setTitle("Editar Informações - RE: " + re);
+            dialog.setModal(true);
+            dialog.setSize(400, 300);
+            dialog.setLayout(new BorderLayout());
+
+            JLabel label = new JLabel("Editar informações para RE: " + re);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+            dialog.add(label, BorderLayout.CENTER);
+
+            JButton closeButton = new JButton("Fechar");
+            closeButton.addActionListener(e -> dialog.dispose());
+            dialog.add(closeButton, BorderLayout.SOUTH);
+
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            return super.stopCellEditing();
+        }
+
+        @Override
+        public boolean isCellEditable(EventObject e) {
+            return true;
+        }
+    }
+
+    // Method to get all image files from the output folder
+    private List<File> getImageFilesFromFolder(String folderPath) {
+        List<File> imageFiles = new ArrayList<>();
+        File folder = new File(folderPath);
+
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles((dir, name) ->
+                    name.toLowerCase().endsWith(".png") || 
+                    name.toLowerCase().endsWith(".jpg") || 
+                    name.toLowerCase().endsWith(".jpeg"));
+            if (files != null) {
+                for (File file : files) {
+                    imageFiles.add(file);
+                }
+            }
+        } else {
+            System.err.println("Diretório não encontrado: " + folderPath);
+        }
+        return imageFiles;
+    }
+
+    private void initUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1391, 796);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(new BorderLayout(0, 0));
+
+        JPanel Header = new JPanel();
+        Header.setBorder(new LineBorder(new Color(192, 192, 192)));
+        FlowLayout flowLayout = (FlowLayout) Header.getLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        contentPane.add(Header, BorderLayout.NORTH);
+
+        JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\resources\\images\\logo.png"));
+        Header.add(lblNewLabel);
+
+        JPanel SideBar = new JPanel();
+        SideBar.setBorder(new MatteBorder(0, 1, 0, 1, new Color(192, 192, 192)));
+        FlowLayout flowLayout_1 = (FlowLayout) SideBar.getLayout();
+        flowLayout_1.setHgap(25);
+        contentPane.add(SideBar, BorderLayout.WEST);
+
+        JButton btnNewButton = new JButton("Gerar Crachas");
+        btnNewButton.setIcon(null);
+        SideBar.add(btnNewButton);
+
+        JPanel Main = new JPanel();
+        contentPane.add(Main, BorderLayout.CENTER);
+
+        textField = new JTextField();
+        textField.setColumns(10);
+
+        JLabel lblNewLabel_1 = new JLabel("Digite o RE:");
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+
+        JButton btnNewButton_1 = new JButton("Buscar");
+        btnNewButton_1.addActionListener(e -> onBuscar());
+
+        JScrollPane scrollPane = new JScrollPane();
+
+        GroupLayout gl_Main = new GroupLayout(Main);
+        gl_Main.setHorizontalGroup(
+                gl_Main.createParallelGroup(Alignment.LEADING)
+                        .addGroup(Alignment.TRAILING, gl_Main.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(gl_Main.createParallelGroup(Alignment.TRAILING)
+                                        .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNewLabel_1, Alignment.LEADING)
+                                        .addComponent(textField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+                                        .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1181, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
+        );
+        gl_Main.setVerticalGroup(
+                gl_Main.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_Main.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblNewLabel_1)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(textField, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1098, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(23, Short.MAX_VALUE))
+        );
+
+        // Dynamic table population
+        String outputPath = "C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output";
+        List<File> imageFiles = getImageFilesFromFolder(outputPath);
+
+        // Create data for the table
+        Object[][] data = new Object[imageFiles.size()][3];
+        for (int i = 0; i < imageFiles.size(); i++) {
+            File imageFile = imageFiles.get(i);                        
+            data[i][0] = "Selecionar"; // Column 1: Button text for selection
+            data[i][1] = loadImage(imageFile.getAbsolutePath()); // Column 2: Image
+            data[i][2] = "Editar"; // Column 3: Button text for edit dialog
+        }
+
+        table_1 = new JTable();
+        table_1.setBorder(new LineBorder(new Color(192, 192, 192)));
+        table_1.setModel(new DefaultTableModel(
+                data,
+                new String[] { "Coluna 1", "Fotos", "Coluna 3" }
+        ) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0 || column == 2; // Make columns 1 and 3 editable for buttons
+            }
+        });
+
+        // Configuração do renderizador e editor
+        table_1.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Selecionar"));
+        table_1.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(table_1, "Selecionar", "SELECT"));
+        table_1.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
+        table_1.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Editar"));
+        table_1.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor(table_1, "Editar", "EDIT"));
+
+        // Configura a largura da coluna 2 (índice 1) para 500px
+        table_1.getColumnModel().getColumn(1).setPreferredWidth(500);
+        table_1.getColumnModel().getColumn(1).setMinWidth(500);
+        table_1.getColumnModel().getColumn(1).setMaxWidth(500);
+        // Configura a largura das colunas 1 e 3 para botões
+        table_1.getColumnModel().getColumn(0).setPreferredWidth(150);
+        table_1.getColumnModel().getColumn(2).setPreferredWidth(150);
+        table_1.setRowHeight(370); // Ajuste a altura conforme necessário
+        scrollPane.setViewportView(table_1);
+        Main.setLayout(gl_Main);
+    }
+
+    private void onBuscar() {
+        String re = textField.getText().trim();
+        if (re.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite o RE");
+            return;
+        }
+
+        try {
+            funcionarioControl.salvarFuncionario(re);
+            JOptionPane.showMessageDialog(this, "Processado.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao processar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private ImageIcon loadImage(String path) {
+        try {
+            if (path != null && !path.isEmpty()) {
+                return new ImageIcon(path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
