@@ -2,6 +2,7 @@ package br.com.cifmm.view;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+
 import javax.swing.border.MatteBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -36,8 +38,8 @@ public class AppSwingMain extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTable table;	
 	private final FuncionarioControl funcionarioControl;
+	private JTable table_1;
 	
 	/**
 	 * Create the frame.
@@ -64,7 +66,7 @@ public class AppSwingMain extends JFrame {
 	            if (value instanceof ImageIcon) {
 	                ImageIcon icon = (ImageIcon) value;
 	                // Redimensiona a imagem se necessário
-	                Image img = icon.getImage().getScaledInstance(80, 100, Image.SCALE_SMOOTH);
+	                Image img = icon.getImage().getScaledInstance(500, 370, Image.SCALE_SMOOTH);
 	                label.setIcon(new ImageIcon(img));
 	            } else {
 	                label.setIcon(null);
@@ -115,35 +117,19 @@ public class AppSwingMain extends JFrame {
 		
 		JButton btnNewButton_1 = new JButton("Buscar");
 		btnNewButton_1.addActionListener(e -> onBuscar());
-
 		
-		table = new JTable();
-		table.setBorder(new LineBorder(new Color(192, 192, 192)));
-		table.setModel(new DefaultTableModel(
-		    new Object[][] {
-		        {"Dado 1", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 3"},
-		        {"Dado 4", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_verso_03093.png"), "Dado 6"},
-		        {"Dado 7", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 9"},
-		    },
-		    new String[] {
-		        "Coluna 1", "Fotos", "Coluna 3"
-		    }
-		));
-
-		// Configuração do renderizador
-		table.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
-		table.setRowHeight(100); // Ajuste a altura conforme necessário
+		JScrollPane scrollPane = new JScrollPane();
 		
 		GroupLayout gl_Main = new GroupLayout(Main);
 		gl_Main.setHorizontalGroup(
 			gl_Main.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_Main.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_Main.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_Main.createParallelGroup(Alignment.LEADING)
-						.addComponent(table, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
-						.addComponent(btnNewButton_1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblNewLabel_1)
-						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE))
+					.addGroup(gl_Main.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNewLabel_1, Alignment.LEADING)
+						.addComponent(textField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1181, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_Main.setVerticalGroup(
@@ -156,9 +142,31 @@ public class AppSwingMain extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(table, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
-					.addContainerGap())
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1098, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(23, Short.MAX_VALUE))
 		);
+		
+		table_1 = new JTable();
+		table_1.setBorder(new LineBorder(new Color(192, 192, 192)));
+		table_1.setModel(new DefaultTableModel(
+		    new Object[][] {
+		        {"Dado 1", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 3"},
+		        {"Dado 4", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_verso_03093.png"), "Dado 6"},
+		        {"Dado 7", loadImage("C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output\\cracha_frente_03093.png"), "Dado 9"},
+		    },
+		    new String[] {
+		        "Coluna 1", "Fotos", "Coluna 3"
+		    }
+		));
+
+		// Configuração do renderizador
+		table_1.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
+		// Configura a largura da coluna 2 (índice 1) para 500px
+		table_1.getColumnModel().getColumn(1).setPreferredWidth(500);
+		table_1.getColumnModel().getColumn(1).setMinWidth(500);
+		table_1.getColumnModel().getColumn(1).setMaxWidth(500);
+		table_1.setRowHeight(370); // Ajuste a altura conforme necessário
+		scrollPane.setViewportView(table_1);
 		Main.setLayout(gl_Main);		
 		
 	}
@@ -189,5 +197,4 @@ public class AppSwingMain extends JFrame {
 	    }
 	    return null;
 	}
-	
 }
