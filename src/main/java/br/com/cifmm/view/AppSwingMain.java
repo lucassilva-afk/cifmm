@@ -29,6 +29,7 @@ public class AppSwingMain extends JFrame {
     private JTextField textField;
     private final FuncionarioControl funcionarioControl;
     private JTable table_1;
+    private JTable table_2;
 
     /**
      * Create the frame.
@@ -130,16 +131,16 @@ public class AppSwingMain extends JFrame {
             dialog.setTitle("Editar Informações - RE: " + re);
             dialog.setModal(true);
             dialog.setSize(400, 300);
-            dialog.setLayout(new BorderLayout());
+            dialog.getContentPane().setLayout(new BorderLayout());
 
             JLabel label = new JLabel("Editar informações para RE: " + re);
             label.setHorizontalAlignment(SwingConstants.CENTER);
             label.setFont(new Font("Tahoma", Font.PLAIN, 16));
-            dialog.add(label, BorderLayout.CENTER);
+            dialog.getContentPane().add(label, BorderLayout.CENTER);
 
             JButton closeButton = new JButton("Fechar");
             closeButton.addActionListener(e -> dialog.dispose());
-            dialog.add(closeButton, BorderLayout.SOUTH);
+            dialog.getContentPane().add(closeButton, BorderLayout.SOUTH);
 
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
@@ -216,40 +217,55 @@ public class AppSwingMain extends JFrame {
 
         JButton btnNewButton_1 = new JButton("Buscar");
         btnNewButton_1.addActionListener(e -> onBuscar());
-
+        
+        JCheckBox chckbxNewCheckBox = new JCheckBox("Selecionar Todos");
+        chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        
+        // Tabela
+        
         JScrollPane scrollPane = new JScrollPane();
-
         GroupLayout gl_Main = new GroupLayout(Main);
         gl_Main.setHorizontalGroup(
-                gl_Main.createParallelGroup(Alignment.LEADING)
-                        .addGroup(Alignment.TRAILING, gl_Main.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(gl_Main.createParallelGroup(Alignment.TRAILING)
-                                        .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblNewLabel_1, Alignment.LEADING)
-                                        .addComponent(textField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
-                                        .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1181, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap())
+        	gl_Main.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_Main.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(gl_Main.createParallelGroup(Alignment.LEADING)
+        				.addGroup(gl_Main.createSequentialGroup()
+        					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+        					.addContainerGap())
+        				.addGroup(Alignment.TRAILING, gl_Main.createSequentialGroup()
+        					.addComponent(chckbxNewCheckBox)
+        					.addPreferredGap(ComponentPlacement.RELATED, 951, Short.MAX_VALUE)
+        					.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+        					.addContainerGap())
+        				.addGroup(gl_Main.createSequentialGroup()
+        					.addComponent(textField, GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+        					.addContainerGap())
+        				.addGroup(gl_Main.createSequentialGroup()
+        					.addComponent(lblNewLabel_1)
+        					.addGap(623))))
         );
         gl_Main.setVerticalGroup(
-                gl_Main.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_Main.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lblNewLabel_1)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(textField, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1098, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(23, Short.MAX_VALUE))
+        	gl_Main.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_Main.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(lblNewLabel_1)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(textField, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addGroup(gl_Main.createParallelGroup(Alignment.LEADING)
+        				.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(chckbxNewCheckBox))
+        			.addGap(18)
+        			.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+        			.addContainerGap())
         );
-
-        // Dynamic table population
-        String outputPath = "C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output";
-        List<File> imageFiles = getImageFilesFromFolder(outputPath);
-
-        // Create data for the table
+        
+		// Dynamic table population
+		String outputPath = "C:\\Users\\Relogio.ponto\\eclipse-workspace\\CIFMM2\\output";
+		List<File> imageFiles = getImageFilesFromFolder(outputPath);
+		
+		// Create data for the table
         Object[][] data = new Object[imageFiles.size()][3];
         for (int i = 0; i < imageFiles.size(); i++) {
             File imageFile = imageFiles.get(i);                        
@@ -257,38 +273,40 @@ public class AppSwingMain extends JFrame {
             data[i][1] = loadImage(imageFile.getAbsolutePath()); // Column 2: Image
             data[i][2] = "Editar"; // Column 3: Button text for edit dialog
         }
-
-        table_1 = new JTable();
-        table_1.setBorder(new LineBorder(new Color(192, 192, 192)));
-        table_1.setModel(new DefaultTableModel(
-                data,
-                new String[] { "Coluna 1", "Fotos", "Coluna 3" }
-        ) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 0 || column == 2; // Make columns 1 and 3 editable for buttons
-            }
-        });
-
-        // Configuração do renderizador e editor
-        table_1.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Selecionar"));
-        table_1.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(table_1, "Selecionar", "SELECT"));
-        table_1.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
-        table_1.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Editar"));
-        table_1.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor(table_1, "Editar", "EDIT"));
-
-        // Configura a largura da coluna 2 (índice 1) para 500px
-        table_1.getColumnModel().getColumn(1).setPreferredWidth(500);
-        table_1.getColumnModel().getColumn(1).setMinWidth(500);
-        table_1.getColumnModel().getColumn(1).setMaxWidth(500);
-        // Configura a largura das colunas 1 e 3 para botões
-        table_1.getColumnModel().getColumn(0).setPreferredWidth(150);
-        table_1.getColumnModel().getColumn(2).setPreferredWidth(150);
-        table_1.setRowHeight(370); // Ajuste a altura conforme necessário
-        scrollPane.setViewportView(table_1);
+        
+        table_2 = new JTable();
+        table_2.setModel(new DefaultTableModel(
+        	new Object[][] {
+        		{null, null, null},
+        		{null, null, null},
+        		{null, null, null},
+        	},
+        	new String[] {
+        		"New column", "New column", "New column"
+        	}
+        ));
+        
+		// Configuração do renderizador e editor
+		table_2.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Selecionar"));
+		table_2.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(table_2, "Selecionar", "SELECT"));
+		table_2.getColumnModel().getColumn(1).setCellRenderer(new ImageRenderer());
+		table_2.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Editar"));
+		table_2.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor(table_2, "Editar", "EDIT"));
+		
+		// Configura a largura da coluna 2 (índice 1) para 500px
+        table_2.getColumnModel().getColumn(1).setPreferredWidth(500);
+        table_2.getColumnModel().getColumn(1).setMinWidth(500);
+        table_2.getColumnModel().getColumn(1).setMaxWidth(500);
+        
+		// Configura a largura das colunas 1 e 3 para botões
+		table_2.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table_2.getColumnModel().getColumn(2).setPreferredWidth(150);
+		table_2.setRowHeight(370); // Ajuste a altura conforme necessário
+        
+        scrollPane.setViewportView(table_2);
         Main.setLayout(gl_Main);
+
+        
     }
 
     private void onBuscar() {
